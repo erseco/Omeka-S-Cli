@@ -18,10 +18,25 @@ Omeka-S-CLI is a command line tool to manage Omeka S installs.
     - List all downloaded themes and their status
 - Config
     - Export list of installed modules and themes
-    - Get, set and list global settings
+    - Get, set and list global settings (`config:get`, `config:set`, `config:list`)
+- User Management
+    - Add users (`user:add`)
+- API Key Management
+    - Create API keys (`apikey:create`)
 - Core
     - Get current Omeka S version
     - Update Omeka S to the latest version
+
+## Automating Initial Site Configuration
+
+Omeka-S-Cli can be used to automate the initial configuration of an Omeka S instance. This is particularly useful for development and CI/CD pipelines, for example, when using tools like [erseco/omeka-s-docker](https://github.com/erseco/omeka-s-docker).
+
+Key commands for automation include:
+- `config:set <id> <value>`: Set global settings (e.g., `installation_title`, `default_locale`, `timezone`).
+- `user:add <email> <name> <role> [password]`: Create users, including administrators. For example, to create a global admin: `user:add admin@example.com AdminName global_admin securepassword`.
+- `apikey:create <user-id> <label>`: Generate API keys for a specified user ID.
+
+These commands allow for scripting the setup of a fresh Omeka S installation.
 
 ## Usage
 
@@ -124,7 +139,6 @@ box compile
 - [ ] Core management (version, latest-version, install, update)
 - [ ] Download/update multiple modules at once
 - [ ] Module dependency checking
-- [ ] Config management (list, get, set)
 
 ## Credits
 

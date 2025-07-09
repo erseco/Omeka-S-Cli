@@ -30,6 +30,7 @@ $commands = [...$commands, ...require(__DIR__ . '/../src/Commands/Theme/Index.ph
 $commands = [...$commands, ...require(__DIR__ . '/../src/Commands/Config/Index.php')];
 $commands = [...$commands, ...require(__DIR__ . '/../src/Commands/Core/Index.php')];
 $commands = [...$commands, ...require(__DIR__ . '/../src/Commands/User/Index.php')];
+$commands = [...$commands, ...require(__DIR__ . '/../src/Commands/ApiKey/Index.php')];
 
 // init application
 $app = new CliApplication('Omeka S Cli', '0.5.2');
