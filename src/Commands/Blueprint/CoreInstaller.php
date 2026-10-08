@@ -13,8 +13,9 @@ use Throwable;
  * The deploy "core" phase: download the Omeka S core (if absent), write database.ini, reset an
  * existing install (with --force) and install the core.
  *
- * Detection and reset use a raw PDO connection (no Omeka bootstrap); the install runs in-process,
- * which boots Omeka on the freshly reset/empty database — the standard single-process install path.
+ * Detection and reset use a raw PDO connection (no Omeka bootstrap); a sync (--skip core) asks
+ * Omeka instead. The install runs in-process, which boots Omeka on the freshly reset/empty
+ * database — the standard single-process install path.
  * A helper for {@see DeployCommand} rather than blueprint-domain logic, so it lives under the command
  * namespace and drives the existing core:* commands through the invoking command.
  */
@@ -90,13 +91,19 @@ class CoreInstaller
 
     /**
      * Refuse to deploy onto an already-installed instance without --force; refuse a sync onto one
-     * that is not installed at all.
+     * that is not installed at all. Asks Omeka rather than the database, so any driver works (e.g.
+     * SQLite), and in a new process: booting Omeka here would freeze its module list before the
+     * modules phase.
      */
-    public function assertExistingInstallDeployable(DatabaseConfig $database, bool $force): void
+    public function assertExistingInstallDeployable(bool $force): void
     {
         $path = $this->command->resolveOmekaPath();
-        if (!$this->databaseHasOmekaTables($database)) {
+        $exitCode = $this->command->runInNewProcess(['core:status', '--is-installed']);
+        if ($exitCode === 1) {
             throw new Exception("Omeka S is not installed at {$path}. Omit '--skip core' to install it.");
+        }
+        if ($exitCode !== 0) {
+            throw new Exception("Could not determine whether Omeka S is installed at {$path} (exit code {$exitCode}).");
         }
         if (!$force) {
             throw new Exception("Omeka S is already installed at {$path}. Pass --force to deploy onto it.");
