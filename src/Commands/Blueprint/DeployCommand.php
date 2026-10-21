@@ -182,7 +182,7 @@ class DeployCommand extends AbstractBlueprintCommand
             }
         } elseif (!$dryRun && !$coreDeferred) {
             // ── sync onto an existing instance ──
-            $core->assertExistingInstallDeployable(DatabaseConfig::fromOmekaPath($this->getOmekaPath()), $force);
+            $core->assertExistingInstallDeployable($force);
         }
 
         // ── remaining phases ────────────────────────────────────────────────────────────────
